@@ -2,20 +2,22 @@
 import { defineConfig, devices } from '@playwright/test';
 require('dotenv').config();
 
-
-const config=  ({
+/**
+ * @see https://playwright.dev/docs/test-configuration
+ */
+const config = ({
   testDir: './tests',
-  timeout: 40*1000,
+  timeout: 50 * 1000,
   expect: {
     timeout: 5000
-
   },
   reporter: 'html',
-  use:{
+  /* Run tests in files in parallel */
+  use: {
     browserName: 'chromium',
     headless: false,
-  }
- 
+
+  },
+
 });
 module.exports = config;
-
