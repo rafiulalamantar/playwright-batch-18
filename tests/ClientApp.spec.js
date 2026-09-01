@@ -4,7 +4,7 @@ const { POManager } = require("../pageObjects/POManager");
 const { OrdersHistoryPage } = require("../pageObjects/OrdersHistoryPage");
 const dataset = JSON.parse(JSON.stringify(require("../utils/placeorderTestData.json")));
 
-test("Verify that order creation succesfully", async ({ page }) => {
+test("Verify that order creation succesfully @Smoke", async ({ page }) => {
   const productName = "ZARA COAT 3";
 
   await page.goto("https://rahulshettyacademy.com/client");
@@ -39,36 +39,34 @@ test("Verify that order creation succesfully", async ({ page }) => {
   await expect(page.getByText("Thankyou for the order.")).toBeVisible();
 });
 
-for (const data of dataset){
-test.only(`Verify that order creation succesfully using pageobject model ${data.productsNames}`, async ({ page }) => {
+for (const data of dataset) {
+  test(`Verify that order creation succesfully using pageobject model ${data.productsNames}`, async ({ page }) => {
+    const poManager = new POManager(page);
 
-const poManager = new POManager(page);
+    const loginPage = poManager.getLoginPage();
+    await loginPage.goToLoginPage();
+    await loginPage.validateLoginPage(data.TEST_EMAIL, data.TEST_PASSWORD_CLIENT_APP);
 
-const loginPage = poManager.getLoginPage();
-await loginPage.goToLoginPage();
-await loginPage.validateLoginPage(data.TEST_EMAIL, data.TEST_PASSWORD);
-const dashboard = poManager.getDashboardPage();
-await dashboard.searchProductAndAddToCart(data.productsNames);
-await dashboard.navigateToCart();
+    const dashboard = poManager.getDashboardPage();
+    await dashboard.searchProductAndAddToCart(data.productsNames);
+    await dashboard.navigateToCart();
 
-const cartPage = poManager.getCartPage();
-await cartPage.VerifyProductIsDisplayed(data.productsNames);
-await cartPage.Checkout();
+    const cartPage = poManager.getCartPage();
+    await cartPage.VerifyProductIsDisplayed(data.productsNames);
+    await cartPage.Checkout();
 
-const ordersReviewPage = poManager.getOrdersReviewPage();
-await ordersReviewPage.searchCountryAndSelect("ind", "India");
-const orderId = await ordersReviewPage.SubmitAndGetOrderId();
-console.log(orderId);
-await dashboard.navigateToOrders();
+    const ordersReviewPage = poManager.getOrdersReviewPage();
+    await ordersReviewPage.searchCountryAndSelect("ind", "India");
+    const orderId = await ordersReviewPage.SubmitAndGetOrderId();
+    console.log(orderId);
 
-const ordersHistoryPage = poManager.getOrdersHistoryPage();
-await ordersHistoryPage.searchOrderAndSelect(orderId);
-expect(orderId.includes(await ordersHistoryPage.getOrderId())).toBeTruthy();
-});
+    await dashboard.navigateToOrders();
+
+    const ordersHistoryPage = poManager.getOrdersHistoryPage();
+    await ordersHistoryPage.searchOrderAndSelect(orderId);
+    expect(orderId.includes(await ordersHistoryPage.getOrderId())).toBeTruthy();
+  });
 }
-
-
-// test.only("test ", async ({page}) => { 
 
 //   const poManager = new POManager(page);
 
