@@ -10,7 +10,8 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
-    "@types/node": "^26.1.2"
+    "@types/node": "^26.1.2",
+    "allure-playwright": "^3.11.0"
   },
   "dependencies": {
     "dotenv": "^17.4.2"

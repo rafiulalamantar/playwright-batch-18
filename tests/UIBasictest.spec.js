@@ -71,7 +71,7 @@ test('Child Windows', async ({browser})=>{
 
 });
 
-test.only ('More Validation', async({page})=>{
+test ('More Validation', async({page})=>{
 
     await page.goto("https://google.com");
     await page.goBack();
